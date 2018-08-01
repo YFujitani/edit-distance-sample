@@ -32,12 +32,19 @@ tagger.parse('')
 #     'SHARP',
 # ]
 
-INPUT = 'Apple 12W USB電源アダプタがほしい'
+# INPUT = 'Apple 12W USB電源アダプタがほしい'
+# KEYWORD_LIST = [
+#     'Apple 12W USB電源アダプタ',
+#     '充電器',
+#     'アダプター',
+#     'ACアダプター',
+# ]
+
+INPUT = 'カシオACアダプタ01がほしい'
 KEYWORD_LIST = [
-    'Apple 12W USB電源アダプタ',
-    '充電器',
-    'アダプター',
-    'ACアダプター',
+    'カシオACアダプタ01',
+    'カシオDCアダプタ01',
+    'カシオUSBケーブル01',
 ]
 
 NUMBER_OF_TIMES_TO_ADD_TOKEN = 8
@@ -90,6 +97,7 @@ def normalize_text(text):
     normalized = jaconv.normalize(normalized, mode='NFKC')
     normalized = jaconv.z2h(normalized, digit=True, kana=False, ascii=True)
     normalized = jaconv.h2z(normalized, digit=False, kana=True, ascii=False)
+    normalized = jaconv.hira2kata(normalized)
     normalized = normalized.replace(' ', '').replace('　', '')
     return normalized
 

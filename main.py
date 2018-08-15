@@ -6,6 +6,8 @@ import MeCab
 import Levenshtein
 import time
 
+from keyboard_distance import sort_by_keyboard_distance
+
 MeCabToken = namedtuple('MeCabToken', ['surface', 'features'])
 
 DICTIONARY_PATH = os.environ.get(
@@ -40,10 +42,10 @@ tagger.parse('')
 #     'ACアダプター',
 # ]
 
-INPUT = 'カシオACアダプタ01がほしい'
+INPUT = 'カシオBCアダプタ01がほしい'
 KEYWORD_LIST = [
-    'カシオACアダプタ01',
-    'カシオDCアダプタ01',
+    'カシオVCアダプタ01',
+    'カシオGCアダプタ01',
     'カシオUSBケーブル01',
 ]
 
@@ -55,6 +57,8 @@ class Candidate:
         self.token = token
         self.distance = distance
         self.similarity = similarity
+        self.diff_strings = []
+        self.keybord_distance = -1
 
 
 class Candidates:
@@ -71,7 +75,10 @@ class Candidates:
         return sorted(self.candidates, key=lambda candidate: candidate.similarity)
 
     def sort(self):
-        return sorted(self.candidates, key=lambda candidate: (-candidate.similarity, candidate.distance))
+        sorted_candatetes = sorted(
+            self.candidates, key=lambda candidate: (-candidate.similarity, candidate.distance))
+        return sort_by_keyboard_distance(sorted_candatetes)
+
 
 def test():
     tokens = parse(INPUT)
@@ -105,7 +112,6 @@ def normalize_text(text):
 def extract_by_edit_distance(tokens, keywords=None):
     words = generate_words(tokens)
     print(words)
-    distance = None
     candidates = Candidates()
 
     for keyword in KEYWORD_LIST:
